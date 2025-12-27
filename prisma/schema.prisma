@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id               BigInt           @id @default(autoincrement())
+  name             String
+  description      String?
+  priceCents       Int
+  currency         String           @db.Char(3)
+  isActive         Boolean          @default(true)
+  market           String           @default("Global")
+  discountPercent  Decimal?         @db.Decimal(5, 2)
+  cashbackPercent  Decimal?         @db.Decimal(5, 2)
+  likes            Int              @default(0)
+  vendorName       String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @default(now()) @updatedAt
+
+  images           ProductImage[]
+  reviews          ProductReview[]
+  
+}
+
+model ProductImage {
+  id         BigInt   @id @default(autoincrement())
+  productId  BigInt
+  imageUrl   String
+  isCover    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId], map: "ux_product_cover_image")
+}
+
+model ProductReview {
+  id        BigInt   @id @default(autoincrement())
+  productId BigInt
+  rating    Int      @db.SmallInt
+  title     String?
+  body      String?
+  likes     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+}
