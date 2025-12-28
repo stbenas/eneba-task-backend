@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output    = "./generated"
 }
 
 datasource db {
@@ -35,7 +36,6 @@ model ProductImage {
 
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@unique([productId], map: "ux_product_cover_image")
 }
 
 model ProductReview {
