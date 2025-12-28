@@ -13,19 +13,33 @@ router.get('/list', async (req, res) => {
       const products = await prisma.product.findMany({
         take: 100,
         include: {
-          images: true
+          images: {
+            where: {
+              isCover: true
+            }
+          }
         }
       });
       return res.status(200).json(serializer.SerializeBigInt(products));
     }
-    const products = await prisma.$queryRaw(Prisma.sql`SELECT * FROM "Product"
-      WHERE SIMILARITY(name, ${searchTerm}) > 0.1
-        OR SIMILARITY(COALESCE(description, ''), ${searchTerm}) > 0.1
+    const similarityThreshold = 0.1;
+    const maxResults = 100;
+    const products = await prisma.$queryRaw(Prisma.sql`
+      SELECT 
+        product.*, 
+        json_agg(row_to_json(img)) FILTER (WHERE img.id IS NOT NULL) as images
+      FROM "Product" as product
+      LEFT JOIN "ProductImage" as img ON product.id = img."productId" AND img."isCover" = true
+      WHERE 
+        SIMILARITY(product.name, ${searchTerm}) > ${similarityThreshold}
+        OR SIMILARITY(COALESCE(product.description, ''), ${searchTerm}) > ${similarityThreshold}
+      GROUP BY product.id
       ORDER BY GREATEST(
-        SIMILARITY(name, ${searchTerm}),
-        SIMILARITY(COALESCE(description, ''), ${searchTerm})
+        SIMILARITY(product.name, ${searchTerm}),
+        SIMILARITY(COALESCE(product.description, ''), ${searchTerm})
       ) DESC
-      LIMIT 100`);
+      LIMIT ${maxResults}
+    `);
     
     res.json(serializer.SerializeBigInt(products));
   } catch (error) {
