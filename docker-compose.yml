@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: demo_user
+      POSTGRES_PASSWORD: demo_pass
+      POSTGRES_DB: demo_db
+    tmpfs:
+      - /var/lib/postgresql
+    ports:
+      - "6002:6002"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo_user -d demo_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "none"
+
+  backend:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://demo_user:demo_pass@db:5432/demo_db
+      PORT: 6003
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "6003:6003"
+    command: sh -c "npx prisma migrate deploy && npx prisma db seed && npm run start"
+    logging:
+      driver: "none"
