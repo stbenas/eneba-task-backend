@@ -20,7 +20,7 @@ router.get('/list', async (req, res) => {
     }
     const products = await prisma.$queryRaw(Prisma.sql`SELECT * FROM "Product"
       WHERE SIMILARITY(name, ${searchTerm}) > 0.1
-         OR SIMILARITY(COALESCE(description, ''), ${searchTerm}) > 0.1
+        OR SIMILARITY(COALESCE(description, ''), ${searchTerm}) > 0.1
       ORDER BY GREATEST(
         SIMILARITY(name, ${searchTerm}),
         SIMILARITY(COALESCE(description, ''), ${searchTerm})
