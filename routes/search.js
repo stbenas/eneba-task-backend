@@ -1,13 +1,9 @@
 import express from "express";
 import { Prisma, prisma } from "../lib/prisma.js";
-const router = express.Router();
+import { SerializeBigInt } from "../lib/serializeBigInt.js";
 
-// Helper to convert BigInt to string for JSON serialization
-const serializeBigInt = (obj) => {
-  return JSON.parse(JSON.stringify(obj, (key, value) =>
-    typeof value === 'bigint' ? value.toString() : value
-  ));
-};
+const router = express.Router();
+const serializer = new SerializeBigInt();
 
 router.get('/list', async (req, res) => {
   try {
@@ -20,7 +16,7 @@ router.get('/list', async (req, res) => {
           images: true
         }
       });
-      return res.status(200).json(serializeBigInt(products));
+      return res.status(200).json(serializer.SerializeBigInt(products));
     }
     const products = await prisma.$queryRaw(Prisma.sql`SELECT * FROM "Product"
       WHERE SIMILARITY(name, ${searchTerm}) > 0.1
@@ -31,7 +27,7 @@ router.get('/list', async (req, res) => {
       ) DESC
       LIMIT 100`);
     
-    res.json(serializeBigInt(products));
+    res.json(serializer.SerializeBigInt(products));
   } catch (error) {
     console.error("Error searching products:", error);
     res.status(500).json({ error: "Internal server error" });
