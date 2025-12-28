@@ -15,8 +15,8 @@ model Product {
   currency         String           @db.Char(3)
   isActive         Boolean          @default(true)
   market           String           @default("Global")
-  discountPercent  Decimal?         @db.Decimal(5, 2)
-  cashbackPercent  Decimal?         @db.Decimal(5, 2)
+  discountPercent  Decimal          @db.Decimal(5, 2) @default(0) 
+  cashbackPercent  Decimal          @db.Decimal(5, 2) @default(0)
   likes            Int              @default(0)
   vendorName       String?
   createdAt        DateTime         @default(now())
