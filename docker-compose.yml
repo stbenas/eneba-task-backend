@@ -23,6 +23,7 @@ services:
     environment:
       DATABASE_URL: postgresql://demo_user:demo_pass@db:5432/demo_db
       PORT: 6003
+      CORS_ORIGIN: http://localhost:6004
     depends_on:
       db:
         condition: service_healthy
