@@ -1,7 +1,7 @@
 # Eneba's internship task: backend
 
->[!IMPORTANT]
-> This project is a non-commercial demo backend built as part of a technical assignment for Eneba. All trademarks and images belong to their respective owners.
+> [!IMPORTANT]
+> This project is a non-commercial demo backend built as part of a technical assignment for Eneba. **All trademarks and images belong to their respective owners**.
 
 ## Tech stack
  - NodeJs
@@ -48,10 +48,9 @@ Fetch a POST request to /product with the following body to create a new product
     }
 }
 ```
-> [!CAUTION]
-> Please note that the imageUrl parameter must include a valid image URL. Right now, all URLs will be accepted by the backend, yet the frontend application will only display images that originate from https://imgproxy.eneba.games/.
-> As this project is a non-commercial demo backend built as part of a technical assignment for Eneba, I used Eneba’s public image CDN for realism, but the project is non-commercial and solely built for evaluation. All trademarks and images belong to their respective owners.
 
+> [!CAUTION]
+> Please note that the imageUrl parameter must include a valid image URL. Right now, all URLs will be accepted by the backend, yet the frontend application will only display images that originate from https://imgproxy.eneba.games/ and https://static.eneba.games. As this project is a non-commercial demo backend built as part of a technical assignment for Eneba, I used Eneba’s public image CDN for realism, but the project is non-commercial and solely built for evaluation. **All trademarks and images belong to their respective owners**.
 
 ## Running the backend
 This repository contains docker files for easy setup.
